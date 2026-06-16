@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+        "type": "java",
+        "name": "Main",
+        "request": "launch",
+        "mainClass": "app.Main",
+        "projectName": "Simulations_Modelling_8d163fc5"
+    },
+    {
+        "type": "java",
+        "name": "Run Bank Queue Simulation",
+        "request": "launch",
+        "mainClass": "app.Main",
+        "projectName": "bank-queue-simulation-system",
+        "preLaunchTask": "Build Bank Queue Simulation",
+        "cwd": "${workspaceFolder}"
+    }
+]
+}

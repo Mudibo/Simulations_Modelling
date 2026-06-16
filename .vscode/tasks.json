@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Bank Queue Simulation",
+      "type": "shell",
+      "command": "if (Test-Path out) { Remove-Item -Recurse -Force out }; New-Item -ItemType Directory -Path out | Out-Null; javac -d out (Get-ChildItem -Recurse -Filter *.java src | ForEach-Object { $_.FullName })",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$javac"
+      ]
+    },
+    {
+      "label": "Run Bank Queue Simulation Task",
+      "type": "shell",
+      "command": "if (Test-Path out) { Remove-Item -Recurse -Force out }; New-Item -ItemType Directory -Path out | Out-Null; javac -d out (Get-ChildItem -Recurse -Filter *.java src | ForEach-Object { $_.FullName }); java -cp out app.Main",
+      "problemMatcher": [
+        "$javac"
+      ]
+    }
+  ]
+}
