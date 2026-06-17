@@ -11,15 +11,15 @@ import java.util.List;
 public class CustomerTableModel extends AbstractTableModel {
     private static final String[] COLUMN_NAMES = {
             "Customer",
-            "Inter Arrival Time",
+            "IAT",
             "Arrival Time",
             "Service Time",
-            "Service Start Time",
-            "Service End Time",
+            "Service Start",
+            "Service End",
             "Waiting Time In Queue",
             "Time In System",
             "Server Idle Time",
-            "Number In Queue",
+            "Queue Length",
             "Number In System"
     };
 

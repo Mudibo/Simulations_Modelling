@@ -1,6 +1,7 @@
 package app;
 
 import application.SimulationController;
+import com.formdev.flatlaf.FlatLightLaf;
 import domain.service.QueueSimulationService;
 import domain.service.QueueSimulationServiceImpl;
 import domain.service.RandomGeneratorService;
@@ -20,7 +21,7 @@ public final class Main {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            setSystemLookAndFeel();
+            setupLookAndFeel();
 
             RandomGeneratorService randomGeneratorService = new UniformRandomGenerator();
             QueueSimulationService queueSimulationService = new QueueSimulationServiceImpl(randomGeneratorService);
@@ -31,11 +32,15 @@ public final class Main {
         });
     }
 
-    private static void setSystemLookAndFeel() {
+    private static void setupLookAndFeel() {
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ignored) {
-            // Falls back to default look and feel.
+            FlatLightLaf.setup();
+        } catch (Throwable ignored) {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception fallbackIgnored) {
+                // Falls back to default look and feel.
+            }
         }
     }
 }

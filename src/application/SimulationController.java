@@ -7,6 +7,7 @@ import domain.service.QueueSimulationService;
 import infrastructure.export.CsvExporter;
 import presentation.input.InputFrame;
 import presentation.output.OutputFrame;
+import util.AppBranding;
 import util.ValidationUtil;
 
 import javax.swing.JFileChooser;
@@ -21,7 +22,7 @@ import java.util.List;
  * Coordinates user actions between UI and simulation services.
  */
 public class SimulationController {
-    private static final String APP_TITLE = "Bank Queue Simulation System";
+    private static final String APP_TITLE = AppBranding.APP_TITLE;
 
     private final QueueSimulationService queueSimulationService;
     private final CsvExporter csvExporter;
@@ -89,7 +90,11 @@ public class SimulationController {
 
         try {
             csvExporter.exportCustomers(customers, selectedFile);
-            JOptionPane.showMessageDialog(parent, "Results exported successfully.", APP_TITLE, JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    parent,
+                    "✓ Results exported successfully",
+                    APP_TITLE,
+                    JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException exception) {
             JOptionPane.showMessageDialog(
                     parent,
