@@ -18,74 +18,74 @@ public class CalculationBreakdown {
         List<Customer> customers = result.customers();
         SimulationStatistics statistics = result.statistics();
 
-        int totalCustomers = statistics.getTotalCustomers();
-        int customersWaited = statistics.getCustomersWhoWaited();
-        int totalIdleTime = statistics.getTotalIdleTime();
-        int totalSimulationTime = statistics.getTotalSimulationTime();
+    int totalCustomers = statistics.getTotalCustomers();
+    int customersWaited = statistics.getCustomersWhoWaited();
 
-        int sumIat = sumInterArrivalTime(customers);
+    int totalIdleTime = sumIdleTime(customers);
+    int totalRunTime = computeTotalRunTime(customers);
         int sumService = sumServiceTime(customers);
         int sumWaiting = sumWaitingTime(customers);
         int sumTimeInSystem = sumTimeInSystem(customers);
 
+    double averageWaiting = totalCustomers == 0 ? 0.0 : (double) sumWaiting / totalCustomers;
+    double probabilityCustomerWaits = totalCustomers == 0 ? 0.0 : (double) customersWaited / totalCustomers;
+    double proportionIdle = totalRunTime == 0 ? 0.0 : (double) totalIdleTime / totalRunTime;
+    double probabilityBusy = 1.0 - proportionIdle;
+    double averageService = totalCustomers == 0 ? 0.0 : (double) sumService / totalCustomers;
+    double averageWaitingForWaited = customersWaited == 0 ? 0.0 : (double) sumWaiting / customersWaited;
+    double averageTimeInSystem = totalCustomers == 0 ? 0.0 : (double) sumTimeInSystem / totalCustomers;
+
         List<TotalValue> totals = List.of(
-                new TotalValue("ΣIAT", String.valueOf(sumIat)),
-                new TotalValue("ΣS", String.valueOf(sumService)),
                 new TotalValue("ΣWq", String.valueOf(sumWaiting)),
+        new TotalValue("ΣS", String.valueOf(sumService)),
                 new TotalValue("ΣTs", String.valueOf(sumTimeInSystem)),
                 new TotalValue("Customers Waited", String.valueOf(customersWaited)),
                 new TotalValue("Total Idle Time", String.valueOf(totalIdleTime)),
-                new TotalValue("Total Simulation Time", String.valueOf(totalSimulationTime))
+        new TotalValue("Total Run Time", String.valueOf(totalRunTime))
         );
 
         List<CalculationRow> rows = new ArrayList<>();
         rows.add(new CalculationRow(
-                "Average Waiting Time",
+        "Average Waiting Time For A Customer",
                 "μ(Wq) = ΣWq / N",
                 sumWaiting + " / " + totalCustomers,
-                formatWithUnit(statistics.getAverageWaitingTime(), "min")));
+        formatWithUnit(averageWaiting, "min")));
 
         rows.add(new CalculationRow(
-                "Probability Customer Waits",
+        "Probability That A Customer Has To Wait",
                 "P(Wq > 0) = Customers Waited / N",
                 customersWaited + " / " + totalCustomers,
-                twoDecimals.format(statistics.getProbabilityCustomerWaits())));
+        twoDecimals.format(probabilityCustomerWaits)));
 
         rows.add(new CalculationRow(
-                "Proportion Server Idle",
-                "P(Idle) = Total Idle Time / Total Simulation Time",
-                totalIdleTime + " / " + totalSimulationTime,
-                twoDecimals.format(statistics.getProportionServerIdle())));
+        "Proportion Of Idle Time Of Server",
+        "P(Idle) = Total Idle Time / Total Run Time",
+        totalIdleTime + " / " + totalRunTime,
+        twoDecimals.format(proportionIdle)));
 
         rows.add(new CalculationRow(
-                "Probability Server Busy",
-                "ρ = ΣS / Total Simulation Time",
-                sumService + " / " + totalSimulationTime,
-                twoDecimals.format(statistics.getProbabilityServerBusy())));
+        "Probability Server Is Busy",
+        "P(Busy) = 1 − P(Idle)",
+        "1 − " + twoDecimals.format(proportionIdle),
+        twoDecimals.format(probabilityBusy)));
 
         rows.add(new CalculationRow(
                 "Average Service Time",
                 "μ(S) = ΣS / N",
                 sumService + " / " + totalCustomers,
-                formatWithUnit(statistics.getAverageServiceTime(), "min")));
+        formatWithUnit(averageService, "min")));
 
         rows.add(new CalculationRow(
-                "Average Waiting Time (Customers Who Waited)",
+        "Average Waiting Time For Those Who Waited",
                 "μ(Wq | Wq > 0) = ΣWq / Customers Waited",
                 sumWaiting + " / " + customersWaited,
-                formatWithUnit(statistics.getAverageWaitingTimeForThoseWhoWait(), "min")));
+        formatWithUnit(averageWaitingForWaited, "min")));
 
         rows.add(new CalculationRow(
-                "Average Inter-Arrival Time",
-                "μ(IAT) = ΣIAT / N",
-                sumIat + " / " + totalCustomers,
-                formatWithUnit(statistics.getAverageTimeBetweenArrivals(), "min")));
-
-        rows.add(new CalculationRow(
-                "Average Time In System",
+        "Average Time Spent In System",
                 "μ(Ts) = ΣTs / N",
                 sumTimeInSystem + " / " + totalCustomers,
-                formatWithUnit(statistics.getAverageTimeSpentInSystem(), "min")));
+        formatWithUnit(averageTimeInSystem, "min")));
 
         return new CalculationData(totals, rows);
     }
@@ -94,12 +94,20 @@ public class CalculationBreakdown {
         return twoDecimals.format(value) + " " + unit;
     }
 
-    private int sumInterArrivalTime(List<Customer> customers) {
+    private int sumIdleTime(List<Customer> customers) {
         int total = 0;
         for (Customer customer : customers) {
-            total += customer.getInterArrivalTime();
+            total += customer.getServerIdleTime();
         }
         return total;
+    }
+
+    private int computeTotalRunTime(List<Customer> customers) {
+        int totalRunTime = 0;
+        for (Customer customer : customers) {
+            totalRunTime = Math.max(totalRunTime, customer.getServiceEndTime());
+        }
+        return totalRunTime;
     }
 
     private int sumServiceTime(List<Customer> customers) {

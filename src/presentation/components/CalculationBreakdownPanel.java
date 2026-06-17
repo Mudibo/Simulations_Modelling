@@ -84,16 +84,21 @@ public class CalculationBreakdownPanel extends JPanel {
         header.setForeground(new Color(25, 35, 52));
         header.setPreferredSize(new java.awt.Dimension(10, 32));
 
-        calculationTable.getColumnModel().getColumn(0).setPreferredWidth(360);
-        calculationTable.getColumnModel().getColumn(1).setPreferredWidth(620);
-        calculationTable.getColumnModel().getColumn(2).setPreferredWidth(190);
+        calculationTable.getColumnModel().getColumn(0).setPreferredWidth(320);
+        calculationTable.getColumnModel().getColumn(1).setPreferredWidth(360);
+        calculationTable.getColumnModel().getColumn(2).setPreferredWidth(320);
+        calculationTable.getColumnModel().getColumn(3).setPreferredWidth(180);
+
+        Font monoFont = resolveMonospacedFont(13);
 
         DefaultTableCellRenderer stripedLeftRenderer = createStripedRenderer(SwingConstants.LEFT, new Font("Segoe UI", Font.PLAIN, 13));
         DefaultTableCellRenderer stripedResultRenderer = createStripedRenderer(SwingConstants.CENTER, new Font("Segoe UI", Font.PLAIN, 13));
+        DefaultTableCellRenderer stripedMonoRenderer = createStripedRenderer(SwingConstants.LEFT, monoFont);
 
         calculationTable.getColumnModel().getColumn(0).setCellRenderer(stripedLeftRenderer);
-        calculationTable.getColumnModel().getColumn(1).setCellRenderer(stripedLeftRenderer);
-        calculationTable.getColumnModel().getColumn(2).setCellRenderer(stripedResultRenderer);
+        calculationTable.getColumnModel().getColumn(1).setCellRenderer(stripedMonoRenderer);
+        calculationTable.getColumnModel().getColumn(2).setCellRenderer(stripedMonoRenderer);
+        calculationTable.getColumnModel().getColumn(3).setCellRenderer(stripedResultRenderer);
 
         JScrollPane scrollPane = new JScrollPane(calculationTable);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -122,6 +127,21 @@ public class CalculationBreakdownPanel extends JPanel {
         renderer.setFont(font);
         renderer.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
         return renderer;
+    }
+
+    private Font resolveMonospacedFont(int size) {
+        Font[] candidates = {
+                new Font("JetBrains Mono", Font.PLAIN, size),
+                new Font("Consolas", Font.PLAIN, size),
+                new Font("Courier New", Font.PLAIN, size)
+        };
+
+        for (Font candidate : candidates) {
+            if (!"Dialog".equalsIgnoreCase(candidate.getFamily())) {
+                return candidate;
+            }
+        }
+        return new Font(Font.MONOSPACED, Font.PLAIN, size);
     }
 
 }

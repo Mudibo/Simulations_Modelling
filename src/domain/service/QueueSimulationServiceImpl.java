@@ -148,7 +148,7 @@ public class QueueSimulationServiceImpl implements QueueSimulationService {
         double averageWaitingTime = totalCustomers == 0 ? 0.0 : (double) sumWaitingTime / totalCustomers;
         double probabilityCustomerWaits = totalCustomers == 0 ? 0.0 : (double) customersWhoWaited / totalCustomers;
         double proportionServerIdle = totalSimulationTime == 0 ? 0.0 : (double) totalIdleTime / totalSimulationTime;
-        double probabilityServerBusy = totalSimulationTime == 0 ? 0.0 : (double) sumServiceTime / totalSimulationTime;
+        double probabilityServerBusy = 1.0 - proportionServerIdle;
         double averageServiceTime = totalCustomers == 0 ? 0.0 : (double) sumServiceTime / totalCustomers;
         double averageWaitingTimeForThoseWhoWait = customersWhoWaited == 0
                 ? 0.0

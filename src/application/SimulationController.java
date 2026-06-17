@@ -5,6 +5,7 @@ import domain.model.SimulationConfig;
 import domain.model.SimulationResult;
 import domain.service.QueueSimulationService;
 import infrastructure.export.CsvExporter;
+import infrastructure.export.PdfExporter;
 import presentation.input.InputFrame;
 import presentation.output.OutputFrame;
 import util.AppBranding;
@@ -26,10 +27,15 @@ public class SimulationController {
 
     private final QueueSimulationService queueSimulationService;
     private final CsvExporter csvExporter;
+    private final PdfExporter pdfExporter;
 
-    public SimulationController(QueueSimulationService queueSimulationService, CsvExporter csvExporter) {
+    public SimulationController(
+            QueueSimulationService queueSimulationService,
+            CsvExporter csvExporter,
+            PdfExporter pdfExporter) {
         this.queueSimulationService = queueSimulationService;
         this.csvExporter = csvExporter;
+        this.pdfExporter = pdfExporter;
     }
 
     public void runSimulation(
@@ -111,10 +117,49 @@ public class SimulationController {
         currentOutputFrame.dispose();
     }
 
+    public void exportResultsAsPdf(JFrame parent, List<Customer> customers) {
+        throw new UnsupportedOperationException("Use exportResultsAsPdf(JFrame, SimulationResult)");
+    }
+
+    public void exportResultsAsPdf(JFrame parent, SimulationResult result) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Simulation Results (PDF)");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("PDF Files (*.pdf)", "pdf"));
+
+        int option = fileChooser.showSaveDialog(parent);
+        if (option != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        File selectedFile = withPdfExtension(fileChooser.getSelectedFile());
+
+        try {
+            pdfExporter.exportSimulationReport(result, selectedFile);
+            JOptionPane.showMessageDialog(
+                    parent,
+                    "✓ PDF exported successfully",
+                    APP_TITLE,
+                    JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException exception) {
+            JOptionPane.showMessageDialog(
+                    parent,
+                    "Failed to export PDF: " + exception.getMessage(),
+                    "Export Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private File withCsvExtension(File file) {
         if (file.getName().toLowerCase().endsWith(".csv")) {
             return file;
         }
         return new File(file.getParentFile(), file.getName() + ".csv");
+    }
+
+    private File withPdfExtension(File file) {
+        if (file.getName().toLowerCase().endsWith(".pdf")) {
+            return file;
+        }
+        return new File(file.getParentFile(), file.getName() + ".pdf");
     }
 }

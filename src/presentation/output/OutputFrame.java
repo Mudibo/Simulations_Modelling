@@ -128,12 +128,18 @@ public class OutputFrame extends JFrame {
         exportButton.setToolTipText("Export customer results to a CSV file");
         exportButton.addActionListener(event -> simulationController.exportResults(this, simulationResult.customers()));
 
+        JButton exportPdfButton = new JButton("Export PDF");
+        exportPdfButton.setFont(UI_FONT_BOLD);
+        exportPdfButton.setToolTipText("Export customer results to a PDF file");
+        exportPdfButton.addActionListener(event -> simulationController.exportResultsAsPdf(this, simulationResult));
+
         JButton runNewSimulationButton = new JButton("Run New Simulation");
         runNewSimulationButton.setFont(UI_FONT_BOLD);
         runNewSimulationButton.setToolTipText("Return to parameter entry and run another simulation");
         runNewSimulationButton.addActionListener(event -> simulationController.runNewSimulation(this));
 
         buttonRow.add(exportButton);
+        buttonRow.add(exportPdfButton);
         buttonRow.add(runNewSimulationButton);
 
         bar.add(buttonRow, BorderLayout.WEST);
@@ -285,7 +291,6 @@ public class OutputFrame extends JFrame {
         cardsGrid.add(new StatisticCard("Average Waiting Time", twoDecimals.format(statistics.getAverageWaitingTime()) + " min"));
         cardsGrid.add(new StatisticCard("Average Service Time", twoDecimals.format(statistics.getAverageServiceTime()) + " min"));
         cardsGrid.add(new StatisticCard("Average Time In System", twoDecimals.format(statistics.getAverageTimeSpentInSystem()) + " min"));
-        cardsGrid.add(new StatisticCard("Average Inter-Arrival Time", twoDecimals.format(statistics.getAverageTimeBetweenArrivals()) + " min"));
         cardsGrid.add(new StatisticCard("Probability Customer Waits", twoDecimals.format(statistics.getProbabilityCustomerWaits() * 100) + "%"));
         cardsGrid.add(new StatisticCard("Probability Server Busy", twoDecimals.format(statistics.getProbabilityServerBusy() * 100) + "%"));
         cardsGrid.add(new StatisticCard("Probability Server Idle", twoDecimals.format(statistics.getProportionServerIdle() * 100) + "%"));
@@ -407,6 +412,12 @@ public class OutputFrame extends JFrame {
         exportButton.setToolTipText("Export customer results to a CSV file");
         exportButton.addActionListener(event -> simulationController.exportResults(this, simulationResult.customers()));
 
+        JButton exportPdfButton = new JButton("Export PDF");
+        exportPdfButton.setPreferredSize(buttonSize);
+        exportPdfButton.setFont(UI_FONT_BOLD);
+        exportPdfButton.setToolTipText("Export customer results to a PDF file");
+        exportPdfButton.addActionListener(event -> simulationController.exportResultsAsPdf(this, simulationResult));
+
         JButton runNewSimulationButton = new JButton("Run New Simulation");
         runNewSimulationButton.setPreferredSize(buttonSize);
         runNewSimulationButton.setFont(UI_FONT_BOLD);
@@ -421,11 +432,13 @@ public class OutputFrame extends JFrame {
 
         explainSelectedButton.setMnemonic('E');
         exportButton.setMnemonic('X');
+        exportPdfButton.setMnemonic('P');
         runNewSimulationButton.setMnemonic('N');
         closeButton.setMnemonic('L');
 
         buttonRow.add(explainSelectedButton);
         buttonRow.add(exportButton);
+        buttonRow.add(exportPdfButton);
         buttonRow.add(runNewSimulationButton);
         buttonRow.add(closeButton);
 

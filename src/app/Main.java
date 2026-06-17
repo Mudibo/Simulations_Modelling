@@ -6,6 +6,7 @@ import domain.service.QueueSimulationService;
 import domain.service.QueueSimulationServiceImpl;
 import domain.service.RandomGeneratorService;
 import infrastructure.export.CsvExporter;
+import infrastructure.export.PdfExporter;
 import infrastructure.random.UniformRandomGenerator;
 import presentation.input.InputFrame;
 
@@ -25,7 +26,10 @@ public final class Main {
 
             RandomGeneratorService randomGeneratorService = new UniformRandomGenerator();
             QueueSimulationService queueSimulationService = new QueueSimulationServiceImpl(randomGeneratorService);
-            SimulationController simulationController = new SimulationController(queueSimulationService, new CsvExporter());
+                SimulationController simulationController = new SimulationController(
+                    queueSimulationService,
+                    new CsvExporter(),
+                    new PdfExporter());
 
             InputFrame inputFrame = new InputFrame(simulationController);
             inputFrame.setVisible(true);

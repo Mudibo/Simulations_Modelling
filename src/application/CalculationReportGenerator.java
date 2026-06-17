@@ -105,16 +105,6 @@ public class CalculationReportGenerator {
 
         FormulaFormatter.appendMetric(
                 report,
-                "Average Inter-Arrival Time",
-                "μ(IAT)",
-                "ΣIAT",
-                "N",
-                totalInterArrivalTime,
-                totalCustomers,
-                twoDecimals.format(statistics.getAverageTimeBetweenArrivals()) + " minutes");
-
-        FormulaFormatter.appendMetric(
-                report,
                 "Average Time in System",
                 "μ(Ts)",
                 "ΣTs",
