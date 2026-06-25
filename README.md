@@ -1,3 +1,11 @@
+## Group Members
+
+155226 Cyprian Kamau
+168329 Sean Mudibo
+169767 Kimotho Jimmy Kariuki
+167181 Amy Mugeni
+168560 Omedi Alvin Eredi
+
 ## Bank Queue Simulation Dashboard
 
 A Java Swing analytics dashboard that simulates a single-server bank queue using discrete-event simulation.
